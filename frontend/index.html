@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gerenciador de Posts</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Gerenciador de Posts</h1>
+
+    <form id="post-form">
+      <input type="text" id="title" placeholder="Título" required />
+      <textarea id="content" placeholder="Conteúdo" required></textarea>
+      <button type="submit">Criar Post</button>
+    </form>
+
+    <input type="text" id="search" placeholder="Buscar por título..." />
+
+    <div id="posts-container"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
