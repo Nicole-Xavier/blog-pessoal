@@ -23,13 +23,21 @@ form.addEventListener('submit', async (e) => {
 
 // Carregar todos os posts
 async function loadPosts(filter = '') {
-  const res = await fetch(API_URL);
-  const posts = await res.json();
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) {
+      throw new Error('Erro ao carregar posts');
+    }
 
-  postsContainer.innerHTML = '';
-  posts
-    .filter(post => post.title.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(addPostToDOM);
+    const posts = await res.json();
+    postsContainer.innerHTML = '';
+    posts
+      .filter(post => post.title.toLowerCase().includes(filter.toLowerCase()))
+      .forEach(addPostToDOM);
+  } catch (error) {
+    console.error(error);
+    postsContainer.innerHTML = '<p>Erro ao carregar posts. Tente novamente mais tarde.</p>';
+  }
 }
 
 // Adicionar post ao DOM
@@ -38,9 +46,19 @@ function addPostToDOM(post) {
   postEl.innerHTML = `
     <h2>${post.title}</h2>
     <p>${post.content}</p>
-    <button onclick="editPost(${post.id}, '${post.title}', '${post.content}')">Editar</button>
+    <button class="edit-btn">Editar</button>
     <button onclick="deletePost(${post.id})">Excluir</button>
   `;
+
+  const editBtn = postEl.querySelector('.edit-btn');
+  editBtn.addEventListener('click', () => {
+    if (post.id) {
+      editPost(post.id);  // Chama a função editPost passando o id
+    } else {
+      console.error('ID não foi passado corretamente.');
+    }
+  });
+
   postsContainer.appendChild(postEl);
 }
 
@@ -52,18 +70,13 @@ async function deletePost(id) {
   loadPosts(searchInput.value);
 }
 
-// Editar post
-async function editPost(id, currentTitle, currentContent) {
-  const newTitle = prompt('Novo Título:', currentTitle);
-  const newContent = prompt('Novo Conteúdo:', currentContent);
-
-  if (newTitle && newContent) {
-    await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: newTitle, content: newContent })
-    });
-    loadPosts(searchInput.value);
+// Editar post direcionando para outra página
+function editPost(id) {
+  if (typeof id === 'number' && !isNaN(id)) {
+    console.log(`Redirecionando para edit.html?id=${id}`);
+    window.location.href = `edit.html?id=${id}`;
+  } else {
+    console.error('ID não foi passado corretamente.');
   }
 }
 

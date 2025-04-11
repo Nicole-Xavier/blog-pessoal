@@ -9,7 +9,7 @@ let posts = []; //Armazenamento em memória
 //CRUD de posts
 app.post('/posts',(req, res) => {
     const {title, content} = req.body;
-    const id =posts.length + 1;
+    const id = posts.length + 1;
     const newPost = {id, title, content};
     posts.push(newPost);
     res.status(201).json(newPost);
@@ -29,7 +29,7 @@ app.post('/posts',(req, res) => {
         const post = posts.find(p => p.id === parseInt(req.params.id));
         if (!post) return res.status(404).json({message:'Post não encontrado'});
         const {title, content} = req.body;
-        post.title = titlte || post.title;
+        post.title = title || post.title;
         post.content = content || post.content;
         res.json(post);
     });
